@@ -18,7 +18,6 @@ foreach ($contestQuestions as $question) {
     $detail=json_decode(file_get_contents($path."/detail.json"));
     $raw->setQuestion($question);
     $raw->setPrevMaxPage($detail->prevMaxPage);
-    $raw->setCurrLine($detail->currLine);
     $raw->setMaxPage($detail->maxPage);
     $raw->setPage($raw->pageContinue()); //var_dump($raw);
     //$raw->manUrl("http://localhost/subtrend/url/page.txt");
@@ -42,20 +41,20 @@ foreach ($contestQuestions as $question) {
         //$raw->setMaxPage($jsonData->max_page);
         //var_dump($jsonData->content);
         //echo $raw->getUrl() ." : ".$raw->pageContinue()." TO ".$raw->getMaxPage().":$cnt<br>";
-        $raw->setCurrLine(filter($jsonData->content,$raw->getCurrLine()));
+        filter($htmlData);
         $raw->incrPrevMaxPage();
         file_put_contents($path."/detail.json",json_encode($raw));
     }
 }
 // Utility Functions
 
-function filter($html,$loop) {
+function filter($html) {
     $dom = new DOMDocument();
     $dom->loadHTML($html);
     $rows = $dom->getElementsByTagName(tr);
     //var_dump($rows->item(1)->childNodes);
     $oloop=$rows->length -1;
-    for($i=$loop;$i< $oloop;$i++) {
+    for($i=1;$i< $oloop;$i++) {
     //foreach ($rows as $row) {
         $cols  = $rows[$i]->childNodes;
         $name=$cols[0]->nodeValue;
@@ -71,10 +70,6 @@ function filter($html,$loop) {
         }
         echo "<br>";
     }
-    if($oloop==13)
-        return 1;
-    else
-        return $oloop;
 }
 
 
@@ -95,7 +90,7 @@ function httpGet($url) {
     //curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
-    //curl_setopt($ch, CURLOPT_HTTPHEADER, array('host: www.codechef.com'));
+    //curl_setopt($ch, CURLOPT_HTTPHEADER, array('Host: graph.facebook.com'));
     $output = curl_exec($ch);
     if($output === false) {
         echo "Error Number:".curl_errno($ch)."<br>";
@@ -111,7 +106,6 @@ class sData {
     var $contestCode;
     var $questionCode;
     var $prevMaxPage=0;
-    var $currLine=1;
     var $maxPage=0;
     function __construct($url) {
         $this->surl=$url;
@@ -135,9 +129,6 @@ class sData {
         }
         return false;
     }
-    function setCurrLine($val) {
-        $this->currLine = $val;
-    }
     function setMaxPage($pageCount) {
         $this->maxPage = $pageCount;
     }
@@ -160,9 +151,6 @@ class sData {
     }
     function getMaxPage() {
         return $this->maxPage;
-    }
-    function getCurrLine() {
-        return $this->currLine;
     }
 }
 
