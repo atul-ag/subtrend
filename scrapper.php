@@ -17,7 +17,7 @@ foreach ($contestQuestions as $question) {
     $path=$contestName."/".$question;
     $detail=json_decode(file_get_contents($path."/detail.json"));
     $raw->setQuestion($question);
-    $raw->setPrevMaxPage($detail->prevMaxPage);
+    $raw->setCurrLine($detail->currLine);
     $raw->setMaxPage($detail->maxPage);
     $raw->setPage($raw->pageContinue()); //var_dump($raw);
     //$raw->manUrl("http://localhost/subtrend/url/page.txt");
@@ -25,11 +25,16 @@ foreach ($contestQuestions as $question) {
     $htmlData = httpGet($raw->getUrl());
     $jsonData = json_decode($htmlData);
     $raw->setMaxPage($jsonData->max_page);
+    if($detail->currLine > 1)
+        $raw->setPrevMaxPage($detail->prevMaxPage-1);
+    else
+        $raw->setPrevMaxPage($detail->prevMaxPage);
     //var_dump($jsonData->content);
     //echo $raw->getUrl() ." : ".$raw->pageContinue()." TO ".$raw->getMaxPage()."<br>";
     //filter($jsonData->content);
     $cnt=0;
     while ($raw->remaining()) {
+        echo '<br>';
         $cnt++;
         $raw->setPage($raw->pageContinue());
         //$raw->manUrl("url/page.txt");
@@ -41,20 +46,20 @@ foreach ($contestQuestions as $question) {
         //$raw->setMaxPage($jsonData->max_page);
         //var_dump($jsonData->content);
         //echo $raw->getUrl() ." : ".$raw->pageContinue()." TO ".$raw->getMaxPage().":$cnt<br>";
-        filter($htmlData);
+        $raw->setCurrLine(filter($htmlData,$raw->getCurrLine()));
         $raw->incrPrevMaxPage();
         file_put_contents($path."/detail.json",json_encode($raw));
     }
 }
 // Utility Functions
 
-function filter($html) {
+function filter($html,$line) {
     $dom = new DOMDocument();
     $dom->loadHTML($html);
     $rows = $dom->getElementsByTagName(tr);
     //var_dump($rows->item(1)->childNodes);
     $oloop=$rows->length -1;
-    for($i=1;$i< $oloop;$i++) {
+    for($i=$line;$i< $oloop;$i++) {
     //foreach ($rows as $row) {
         $cols  = $rows[$i]->childNodes;
         $name=$cols[0]->nodeValue;
@@ -70,6 +75,7 @@ function filter($html) {
         }
         echo "<br>";
     }
+    return (($oloop-1)%12)+1;
 }
 
 
@@ -106,6 +112,7 @@ class sData {
     var $contestCode;
     var $questionCode;
     var $prevMaxPage=0;
+    var $currLine=1;
     var $maxPage=0;
     function __construct($url) {
         $this->surl=$url;
@@ -135,13 +142,16 @@ class sData {
     function setPrevMaxPage($pageCount) {
         $this->prevMaxPage = $pageCount;
     }
+    function setCurrLine($val) {
+        $this->currLine = $val;
+    }
     function incrPrevMaxPage() {
         if($this->prevMaxPage < $this->maxPage) {
             $this->prevMaxPage = $this->prevMaxPage + 1;
         }
     }
     function remaining() {
-        return $this->prevMaxPage < $this->maxPage;
+        return ($this->prevMaxPage < $this->maxPage);
     }
     function pageContinue() {
         return $this->prevMaxPage;
@@ -149,8 +159,8 @@ class sData {
     function getUrl() {
             return $this->surl;
     }
-    function getMaxPage() {
-        return $this->maxPage;
+    function getCurrLine() {
+        return $this->currLine;
     }
 }
 
