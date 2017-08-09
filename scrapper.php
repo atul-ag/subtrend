@@ -7,7 +7,7 @@
  */
 
 $id=time();
-$test=true;
+$test=false;
 echo $id."<br>";
 include("init.php");
 
@@ -15,7 +15,6 @@ if(!is_dir($contestName)) {
     mkdir($contestName);
     echo "Making Dir $contestName <br>";
 }
-
 foreach ($contestQuestions as $subDir) {
     $path=$contestName."/".$subDir;
     if(!is_dir($path)) {
@@ -25,18 +24,47 @@ foreach ($contestQuestions as $subDir) {
         $raw->setQuestion($subDir);
         $raw->setMaxPage(0);
         file_put_contents($path."/detail.json",json_encode($raw));
-        $starArray=array("contestName"=>$contestName,"contestQuestion"=>$subDir,"time"=>array("$id"=>array_fill(0, 8, 0)));
+        $starArray=array("contestName"=>$contestName,"contestQuestion"=>$subDir,"time"=>array("$id"=>array_fill(0, 8, 0)),"pointer"=>array("$id"=>array("page"=>0,"line"=>0)));
         file_put_contents($path."/starData.json",json_encode($starArray));
         
-        $langArray=array("contestName"=>$contestName,"contestQuestion"=>$subDir,"time"=>array("$id"=>array()));
+        $langArray=array("contestName"=>$contestName,"contestQuestion"=>$subDir,"time"=>array("$id"=>array()),"pointer"=>array("$id"=>array("page"=>0,"line"=>0)));
         file_put_contents($path."/langData.json",json_encode($langArray));
 
-        print_r(json_encode($starArray));
-        echo "<br>";
-        print_r(json_encode($langArray));
+        //print_r(json_encode($starArray));
+        //echo "<br>";
+        //print_r(json_encode($langArray));
     }
 }
+/*
+foreach ($contestQuestions as $subDir) {
+    $path = $contestName . "/" . $subDir;
+    $starArray = json_decode(file_get_contents($path . "/starData.json"),true);
+    //print_r(json_encode($starArray));
+    $currStarArray = end($starArray["time"]);
+    $currStarArray[0]++;
+    //echo "<br>";
+    $starArray["time"]["$id"]=$currStarArray;
+    $starArray["pointer"]["$id"]=array("page"=>0,"line"=>0);
+    print_r(json_encode($starArray));
+    file_put_contents($path."/starData.json",json_encode($starArray));
 
+}
+
+foreach ($contestQuestions as $subDir) {
+    $path = $contestName . "/" . $subDir;
+    $langArray = json_decode(file_get_contents($path . "/langData.json"),true);
+    print_r(json_encode($langArray));
+    $currLangArray = end($langArray["time"]);
+    $currLangArray["c++"]++;
+    echo "<br>";
+    $langArray["time"]["$id"]=$currLangArray;
+    $langArray["pointer"]["$id"]=array("page"=>0,"line"=>0);
+
+    print_r(json_encode($langArray));
+    file_put_contents($path."/langData.json",json_encode($langArray));
+
+}
+*/
 if(!$test) {
 
 //Initialize
@@ -45,6 +73,9 @@ if(!$test) {
     foreach ($contestQuestions as $question) {
         $path = $contestName . "/" . $question;
         $detail = json_decode(file_get_contents($path . "/detail.json"));
+        $starArray = json_decode(file_get_contents($path . "/starData.json"),true);
+        $langArray = json_decode(file_get_contents($path . "/langData.json"),true);
+
         $raw->setQuestion($question);
         $raw->setCurrLine($detail->currLine);
         $raw->setMaxPage($detail->maxPage);
@@ -62,8 +93,10 @@ if(!$test) {
         //echo $raw->getUrl() ." : ".$raw->pageContinue()." TO ".$raw->getMaxPage()."<br>";
         //filter($jsonData->content);
         $cnt = 0;
+        $GLOBALS['currStarArray'] = end($starArray["time"]);
+        $GLOBALS['currLangArray'] = end($langArray["time"]);
         while ($raw->remaining()) {
-            echo '<br>';
+            //echo '<br>';
             $cnt++;
             $raw->setPage($raw->pageContinue());
             //$raw->manUrl("url/page.txt");
@@ -84,6 +117,16 @@ if(!$test) {
                 sleep(1);
             }
         }
+
+        $starArray["time"]["$id"]=$GLOBALS['currStarArray'];
+        $langArray["time"]["$id"]=$GLOBALS['currLangArray'];
+
+        $starArray["pointer"]["$id"]=array("page"=>$raw->pageContinue(),"line"=>$raw->getCurrLine());
+        $langArray["pointer"]["$id"]=array("page"=>$raw->pageContinue(),"line"=>$raw->getCurrLine());
+
+
+        file_put_contents($path."/starData.json",json_encode($starArray));
+        file_put_contents($path."/langData.json",json_encode($langArray));
     }
 
 }
@@ -100,14 +143,20 @@ function filter($html,$line) {
         $cols  = $rows[$i]->childNodes;
         $name=$cols[0]->nodeValue;
         $star=$name[0];
+        $lang=$cols[3]->nodeValue;
         if(is_numeric($star)) {
             //star based
-            echo $star." ".$cols[3]->nodeValue;
+            //echo $star." ".$cols[3]->nodeValue;
+            $GLOBALS['currStarArray'][$star]++;
+            $GLOBALS['currLangArray']["$lang"]++;
+
         }
         else {
             //0 star or newbie
+            $GLOBALS['currStarArray'][0]++;
+            $GLOBALS['currLangArray']["$lang"]++;
 
-            echo $star." () ".$cols[3]->nodeValue;
+            //echo $star." () ".$cols[3]->nodeValue;
         }
         echo "<br>";
     }
