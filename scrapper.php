@@ -6,50 +6,86 @@
  * Time: 4:11 PM
  */
 
-
-echo time()."<br>";
+$id=time();
+$test=true;
+echo $id."<br>";
 include("init.php");
 
+if(!is_dir($contestName)) {
+    mkdir($contestName);
+    echo "Making Dir $contestName <br>";
+}
+
+foreach ($contestQuestions as $subDir) {
+    $path=$contestName."/".$subDir;
+    if(!is_dir($path)) {
+        mkdir($path);
+        $raw = new sData();
+        $raw->setContest($contestName);
+        $raw->setQuestion($subDir);
+        $raw->setMaxPage(0);
+        file_put_contents($path."/detail.json",json_encode($raw));
+        $starArray=array("contestName"=>$contestName,"contestQuestion"=>$subDir,"time"=>array("$id"=>array_fill(0, 8, 0)));
+        file_put_contents($path."/starData.json",json_encode($starArray));
+        
+        $langArray=array("contestName"=>$contestName,"contestQuestion"=>$subDir,"time"=>array("$id"=>array()));
+        file_put_contents($path."/langData.json",json_encode($langArray));
+
+        print_r(json_encode($starArray));
+        echo "<br>";
+        print_r(json_encode($langArray));
+    }
+}
+
+if(!$test) {
+
 //Initialize
-$raw = new sData();
-$raw->setContest($contestName);
-foreach ($contestQuestions as $question) {
-    $path=$contestName."/".$question;
-    $detail=json_decode(file_get_contents($path."/detail.json"));
-    $raw->setQuestion($question);
-    $raw->setCurrLine($detail->currLine);
-    $raw->setMaxPage($detail->maxPage);
-    $raw->setPage($raw->pageContinue()); //var_dump($raw);
-    //$raw->manUrl("http://localhost/subtrend/url/page.txt");
-    //$htmlData = file_get_contents($raw->getUrl());
-    $htmlData = httpGet($raw->getUrl());
-    $jsonData = json_decode($htmlData);
-    $raw->setMaxPage($jsonData->max_page);
-    if($detail->currLine > 1)
-        $raw->setPrevMaxPage($detail->prevMaxPage-1);
-    else
-        $raw->setPrevMaxPage($detail->prevMaxPage);
-    //var_dump($jsonData->content);
-    //echo $raw->getUrl() ." : ".$raw->pageContinue()." TO ".$raw->getMaxPage()."<br>";
-    //filter($jsonData->content);
-    $cnt=0;
-    while ($raw->remaining()) {
-        echo '<br>';
-        $cnt++;
-        $raw->setPage($raw->pageContinue());
-        //$raw->manUrl("url/page.txt");
-        //echo $raw->getUrl()."<br>";
+    $raw = new sData();
+    $raw->setContest($contestName);
+    foreach ($contestQuestions as $question) {
+        $path = $contestName . "/" . $question;
+        $detail = json_decode(file_get_contents($path . "/detail.json"));
+        $raw->setQuestion($question);
+        $raw->setCurrLine($detail->currLine);
+        $raw->setMaxPage($detail->maxPage);
+        $raw->setPage($raw->pageContinue()); //var_dump($raw);
+        //$raw->manUrl("http://localhost/subtrend/url/page.txt");
         //$htmlData = file_get_contents($raw->getUrl());
         $htmlData = httpGet($raw->getUrl());
-        //var_dump($htmlData);
         $jsonData = json_decode($htmlData);
-        //$raw->setMaxPage($jsonData->max_page);
+        $raw->setMaxPage($jsonData->max_page);
+        if ($detail->currLine > 1)
+            $raw->setPrevMaxPage($detail->prevMaxPage - 1);
+        else
+            $raw->setPrevMaxPage($detail->prevMaxPage);
         //var_dump($jsonData->content);
-        //echo $raw->getUrl() ." : ".$raw->pageContinue()." TO ".$raw->getMaxPage().":$cnt<br>";
-        $raw->setCurrLine(filter($htmlData,$raw->getCurrLine()));
-        $raw->incrPrevMaxPage();
-        file_put_contents($path."/detail.json",json_encode($raw));
+        //echo $raw->getUrl() ." : ".$raw->pageContinue()." TO ".$raw->getMaxPage()."<br>";
+        //filter($jsonData->content);
+        $cnt = 0;
+        while ($raw->remaining()) {
+            echo '<br>';
+            $cnt++;
+            $raw->setPage($raw->pageContinue());
+            //$raw->manUrl("url/page.txt");
+            //echo $raw->getUrl()."<br>";
+            //$htmlData = file_get_contents($raw->getUrl());
+            $htmlData = httpGet($raw->getUrl());
+            if ($htmlData != false) {
+                //var_dump($htmlData);
+                $jsonData = json_decode($htmlData);
+                //$raw->setMaxPage($jsonData->max_page);
+                //var_dump($jsonData->content);
+                //echo $raw->getUrl() ." : ".$raw->pageContinue()." TO ".$raw->getMaxPage().":$cnt<br>";
+                $raw->setCurrLine(filter($htmlData, $raw->getCurrLine()));
+                $raw->incrPrevMaxPage();
+                file_put_contents($path . "/detail.json", json_encode($raw));
+            } else {
+                //usleep(1);
+                sleep(1);
+            }
+        }
     }
+
 }
 // Utility Functions
 
