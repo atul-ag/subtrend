@@ -1,8 +1,8 @@
 <?php
 echo time()."<br>";
-$contestName = "LOCJUL17";
-$contestQuestions = array("CAVECOIN");
+$contestName = "AUG17";
+$contestQuestions = array("PALINGAM","GCAC","CHEFMOVR","RAINBOWA","CHEFFA","STRINGRA","HILLJUMP","WALKBT","MATDW");
+//$contestQuestions = array("CHEFFA","STRINGRA","HILLJUMP","WALKBT","MATDW");
 //var_dump($contestQuestions);
-
 
 ?>
