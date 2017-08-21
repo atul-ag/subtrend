@@ -5,7 +5,7 @@
  * Date: 26/7/17
  * Time: 4:11 PM
  */
-
+chdir(__DIR__);
 $id=time();
 $test=false;
 echo $id."<br>";
@@ -158,7 +158,7 @@ function filter($html,$line) {
 
             //echo $star." () ".$cols[3]->nodeValue;
         }
-        echo "<br>";
+       // echo "<br>";
     }
     return (($oloop-1)%12)+1;
 }
