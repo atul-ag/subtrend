@@ -3,6 +3,7 @@
 //	#260600 - Reset
 // 	#ffffff - Text
 
+
 .dark {
 	color:	#000000;
 }
@@ -67,7 +68,6 @@
      flex: 1 0 auto;
  }
 
- 
 
 footer {
 	z-index: 1000;
