@@ -327,7 +327,7 @@
 							if(type=='star') {
 								for(var j=0;j<len;j++) {
 									if(!xArr.hasOwnProperty(j))
-										xArr[j]=0;
+										xArr[j]=j+'★';
 									sum=sum+(json["time"][stamps][j]);
 									if(!dataAr[stamps][j]) {
 										dataAr[stamps][j]=0;
@@ -339,7 +339,7 @@
 							else if(type=='lang') {
 								for(uages in json["time"][stamps]) {
 									if(!xArr.hasOwnProperty(uages))
-										xArr[uages]=0;
+										xArr[uages]=uages;
 									sum=sum+(json["time"][stamps][uages]);
 									if(!dataAr[stamps][uages]) {
 										dataAr[stamps][uages]=0;
@@ -358,7 +358,7 @@
 			console.log(dataAr);
 			graphArray=[];
 			for (xVal in xArr) {
-				tempAr.push(xVal+'★');
+				tempAr.push(xArr[xVal]);
 			}
 			graphArray.push(tempAr);
 			console.log(graphArray);
