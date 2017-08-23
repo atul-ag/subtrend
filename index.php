@@ -98,18 +98,18 @@
 			type = $("#type").val();
 			//alert(contest+" "+question+" "+type);
 			graphArray = [
-			['Year', 'Sales', 'Expenses'],
-			['2004',  1000,      400],
-			['2005',  1170,      460],
-			['2006',  660,       1120],
-			['2007',  1030,      540]
+			['Year', 'A', 'G'],
+			['11',  0000,      0010],
+			['51',  0001,      0111]
 			]
 			if(contest && !question && !type) {
 				all(contest);
+				$('#question').show();
+				$('#type').show();
 				vartitle=contest;
 			}
 			else if(contest && question && !type) {
-				//oneQuestion(contest,question);
+				oneQuestion(contest,question);
 			}
 			else if(contest && question && type){
 				single(contest,question,type);
@@ -119,6 +119,9 @@
 				else
 					vartitle = vartitle+'Language';
 				vartitle = vartitle+' Based';
+			}
+			else if(contest && !question && type) {
+				oneType(contest,type);
 			}
 			else {
 				//alert("Invalid Selection");
@@ -194,6 +197,44 @@
 		}
 		function oneQuestion(contest,question) {
 			//alert(contest + question + "Question + Contest");
+			var ar=getQuestions(contest);
+			var dataAr={};
+			var tempAr=[];
+			tempAr.push('Time');
+			tempAr.push(question);
+			var path=contest+'/'+question+'/'+'starData.json';
+			$.ajax({
+				url: path,
+				dataType: 'json',
+				async: false,
+				success: function(json) {
+					for (stamps in json["time"]) {
+						var len=json["time"][stamps].length;
+						var sum=0;
+						if(!dataAr.hasOwnProperty(stamps))
+							dataAr[stamps]={};
+						for(var j=0;j<len;j++) {
+							sum=sum+(json["time"][stamps][j]);
+						}
+						dataAr[stamps][question]=sum;
+
+					}
+				}
+			});
+			//console.log(dataAr);
+			graphArray=[];
+			graphArray.push(tempAr);
+			console.log(graphArray);
+			for(stamps in dataAr) {
+				tempAr=[];
+				var epoch = new Date( stamps*1000 );
+				tempAr.push(stamps);
+				if(!dataAr[stamps].hasOwnProperty(question))
+					tempAr.push(0);
+				else
+					tempAr.push(dataAr[stamps][question]);
+				graphArray.push(tempAr);
+			}
 			return;
 		}
 		function single(contest,question,type) {
@@ -217,7 +258,7 @@
 						if(type=='star') {
 							for(var j=0;j<len;j++) {
 								if(!xArr.hasOwnProperty(j))
-									xArr[j]=j;
+									xArr[j]=j+'★';
 								sum=sum+(json["time"][stamps][j]);
 								dataAr[stamps][j]=json["time"][stamps][j];
 							}
@@ -235,6 +276,84 @@
 					}
 				}
 			});
+			console.log(xArr);
+			console.log(dataAr);
+			graphArray=[];
+			for (xVal in xArr) {
+				tempAr.push(xArr[xVal]);
+			}
+			graphArray.push(tempAr);
+			console.log(graphArray);
+			for(stamps in dataAr) {
+				tempAr=[];
+				tempAr.push(stamps);
+				//if(!dataAr[stamps].hasOwnProperty(question))
+				//	tempAr.push(0);
+				//else
+				//	tempAr.push(dataAr[stamps][question]);
+				var epoch = new Date( stamps*1000 );
+				for (xVal in xArr) {
+					if(!dataAr[stamps].hasOwnProperty(xVal))
+						tempAr.push(0);
+					else
+						tempAr.push(dataAr[stamps][xVal]);
+				}
+				graphArray.push(tempAr);
+			}
+			return;
+		}
+		function oneType(contest,type) {
+			//alert(contest + type + " contest and type");
+			var ar=getQuestions(contest);
+			var numberOfQuestion = ar.length;
+			var xArr={};
+			var dataAr={};
+			var tempAr=[];
+			tempAr.push('Time');
+			for(var i=0;i<numberOfQuestion;i++) {
+				var question=ar[i];
+				//alert(contest + question + type + " contest and type");
+				var path=contest+'/'+question+'/'+type+'Data.json';
+				$.ajax({
+					url: path,
+					dataType: 'json',
+					async: false,
+					success: function(json) {
+						for (stamps in json["time"]) {
+							var len=json["time"][stamps].length;
+							var sum=0;
+							if(!dataAr.hasOwnProperty(stamps))
+								dataAr[stamps]={};
+							if(type=='star') {
+								for(var j=0;j<len;j++) {
+									if(!xArr.hasOwnProperty(j))
+										xArr[j]=0;
+									sum=sum+(json["time"][stamps][j]);
+									if(!dataAr[stamps][j]) {
+										dataAr[stamps][j]=0;
+										//alert(stamps+" "+j+"\n");
+									}
+									dataAr[stamps][j]=dataAr[stamps][j]+(json["time"][stamps][j]);
+								}
+							}
+							else if(type=='lang') {
+								for(uages in json["time"][stamps]) {
+									if(!xArr.hasOwnProperty(uages))
+										xArr[uages]=0;
+									sum=sum+(json["time"][stamps][uages]);
+									if(!dataAr[stamps][uages]) {
+										dataAr[stamps][uages]=0;
+										//alert(stamps+" "+j+"\n");
+									}
+									dataAr[stamps][uages]=dataAr[stamps][uages]+(json["time"][stamps][uages]);
+								}
+							}
+							dataAr[stamps][question]=sum;
+
+						}
+					}
+				});
+			}
 			console.log(xArr);
 			console.log(dataAr);
 			graphArray=[];
