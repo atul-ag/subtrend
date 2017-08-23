@@ -139,35 +139,29 @@
 			//alert(contest + " all contest Data");
 			var ar=getQuestions(contest);
 			var numberOfQuestion = ar.length;
-			var dataAr=zeros([numberOfQuestion,8]);
-			var i=0,j=0;
-			dataAr[i][j]=10;
-			console.log(dataAr[0][0]);
+			var dataAr={};
 			$("#content").empty();
 			for(var i=0;i<numberOfQuestion;i++) {
 				var question=ar[i];
 				var path=contest+'/'+question+'/'+'starData.json';
-				var json=$.getJSON(path)
-				.done(function( json ) {
-					var end=Object.keys(json["time"]);
-					//$("#content").append( "JSON Data: " + json["time"][end[end.length-1]][7] +" ");
-					var len=8; // Because there fixed 8 starts : json["time"][end[end.length-1]].length;
-					for(var j=0;j<len;j++) {
-						
-					dataAr[i][j]=json["time"][end[end.length-1]][j];
-						//dataAr[i][j]+=json["time"][end[end.length-1]][j];
-					}
-					$("#content").append("<br>");
-					//$("#content").append( "JSON Data: " + JSON.stringify(Object.keys(json["time"]["1503233085"]), null, 2) +"<br><br>");
-					//console.log( "JSON Data: " + JSON.stringify(json, null, 2) );
-					
-				})
-				.fail(function( jqxhr, textStatus, error ) {
-					var err = textStatus + ", " + error;
-					console.log( "Request Failed: " + err );
-					return null;
-				});
+				$.ajax({
+					url: path,
+					dataType: 'json',
+					async: false,
+					success: function(json) {
+						for (stamps in json["time"]) {
+							var len=json["time"][stamps].length;
+							var sum=0;
+							if(!dataAr.hasOwnProperty(stamps))
+								dataAr[stamps]={};
+							for(var j=0;j<len;j++) {
+								sum=sum+(json["time"][stamps][j]);
+							}
+							dataAr[stamps][question]=sum;
 
+						}
+					}
+				});
 			}
 			console.log(dataAr);
 			return;
