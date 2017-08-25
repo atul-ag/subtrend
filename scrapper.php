@@ -8,7 +8,7 @@
 chdir(__DIR__);
 $id=time();
 $test=false;
-echo $id."<br>";
+echo $id." - Initialized<br>";
 include("init.php");
 
 if(!is_dir($contestName)) {
@@ -252,5 +252,5 @@ class sData {
 
 
 //curl 'https://www.codechef.com/ssubmission/prob?page=3&pcode=ZCO14003&ccode=ZCOPRAC' -H 'accept-encoding: gzip, deflate, br' -H 'x-requested-with: XMLHttpRequest' -H 'accept-language: en-GB,en-US;q=0.8,en;q=0.6' -H 'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36' -H 'accept: application/json, text/javascript, */*; q=0.01' -H 'referer: https://www.codechef.com/ZCOPRAC/problems/ZCO14003' -H 'authority: www.codechef.com' -H 'cookie: __utmt=1; __utma=100380940.876135527.1497387992.1497387992.1501067144.2; __utmb=100380940.4.10.1501067144; __utmc=100380940; __utmz=100380940.1497387992.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none); __asc=fc773be115d7e931215d24030e2; __auc=fc773be115d7e931215d24030e2; poll_time=1501067591662; AWSALB=DAx8JmW3Tk53ZpuEFb+/c0wjDaq+cQMHCD/D0SrD4tHnSuW2LNfDGCAOltW2uKP/sApF6mYAmLgh5dkj6eomRrjGRqxWJZ3v8VBhu+fMdCJlyEsw024ryJL1PFTp; notification=0' -H 'if-modified-since: Wed, 26 Jul 2017 11:11:48 +0000' --compressed
-
+echo $id." - Finished<br>";
 ?>

@@ -1,3 +1,6 @@
+<?php
+include 'init.php';
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -31,21 +34,17 @@
 			<label>Contests </label>
 			<select class="browser-default" id="contest" onchange="render()">
 				<option value="" disabled selected>Choose Contest</option>
-				<option value="AUG17">AUG17</option>
+				<option value="<?php echo "$contestName"; ?>"><?php echo "$contestName"; ?></option>
 			</select>
 			<label>Questions </label>
 			<select class="browser-default" id="question" onchange="render()">
 				<option value="" disabled selected>Choose Question</option>
-				<option value="" class="red-text">clear</option>				
-				<option value="CHEFFA">CHEFFA</option>
-				<option value="CHEFMOVR">CHEFMOVR</option>
-				<option value="GCAC">GCAC</option>
-				<option value="HILLJUMP">HILLJUMP</option>
-				<option value="MATDW">MATDW</option>
-				<option value="PALINGAM">PALINGAM</option>
-				<option value="RAINBOWA">RAINBOWA</option>
-				<option value="STRINGRA">STRINGRA</option>
-				<option value="WALKBT">WALKBT</option>
+				<option value="" class="red-text">clear</option>	
+				<?php
+				foreach ($contestQuestions as $prob) { 
+					echo "<option value='$prob'>$prob</option>";
+				}
+				?>
 			</select>
 			<label>Types </label>
 			<select class="browser-default" id="type" onchange="render()">
@@ -61,7 +60,7 @@
 		<div class="container">
 			<div class="row">
 				<h3 class="center-align">Submission Trends</h3>
-
+				<span id="url"></span>
 				<div id="content">
 					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend enim non metus malesuada, a ullamcorper velit luctus. Vestibulum quis blandit ex. Vivamus ut malesuada risus, vel hendrerit mi. Nunc elit nibh, dictum sit amet nisi ac, sollicitudin faucibus felis. Curabitur mattis dui et molestie imperdiet. Morbi ultricies diam at malesuada accumsan. Praesent in risus a tellus feugiat sodales vitae et nisi.</p>
 
@@ -90,6 +89,7 @@
 		var type = $("#type").val();
 		var varvtitle;
 		var graphArray;
+		var setUrl="";
 
 		function render() {
 			//$("#content").empty();
@@ -107,9 +107,11 @@
 				$('#question').show();
 				$('#type').show();
 				vartitle=contest;
+				setUrl=contest;
 			}
 			else if(contest && question && !type) {
 				oneQuestion(contest,question);
+				setUrl=contest+'/problems/'+question;
 			}
 			else if(contest && question && type){
 				single(contest,question,type);
@@ -119,13 +121,16 @@
 				else
 					vartitle = vartitle+'Language';
 				vartitle = vartitle+' Based';
+				setUrl=contest+'/problems/'+question;
 			}
 			else if(contest && !question && type) {
 				oneType(contest,type);
+				setUrl=contest;
 			}
 			else {
 				//alert("Invalid Selection");
 			}
+			$('#url').html(function() {return '<a href="https://www.codechef.com/'+setUrl+'" target="_blank">Link to Codechef:<br> www.codechef.com/'+setUrl+'</a>';});
 			google.charts.load('current', {'packages':['corechart']});
 			google.charts.setOnLoadCallback(drawChart);
 		}
@@ -141,7 +146,7 @@
 
 		function getQuestions(contest) {
 			//alert("Getting Qns for - "+contest);
-			var ar=["PALINGAM","GCAC","CHEFMOVR","RAINBOWA","CHEFFA","STRINGRA","HILLJUMP","WALKBT","MATDW"];
+			var ar=<?php echo json_encode($contestQuestions); ?>;
 			return ar;
 		}
 

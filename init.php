@@ -1,5 +1,4 @@
  <?php
-echo time()." - Initialized<br>";
 $contestName = "LOCAUG17";
 $contestQuestions = array("ALATE","ALTSUB","GTREE","KMAX","PRINCESS");
 /*
