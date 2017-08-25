@@ -3,6 +3,7 @@ var question = $("#question").val();
 var type = $("#type").val();
 var varvtitle;
 var graphArray;
+var setUrl="";
 
 function render() {
 	//$("#content").empty();
@@ -10,19 +11,21 @@ function render() {
 	question = $("#question").val();
 	type = $("#type").val();
 	//alert(contest+" "+question+" "+type);
-	/*graphArray = [
+	graphArray = [
 	['Year', 'A', 'G'],
 	['11',  0000,      0010],
 	['51',  0001,      0111]
-	]*/
+	]
 	if(contest && !question && !type) {
 		all(contest);
 		$('#question').show();
 		$('#type').show();
 		vartitle=contest;
+		setUrl=contest;
 	}
 	else if(contest && question && !type) {
 		oneQuestion(contest,question);
+		setUrl=contest+'/problems/'+question;
 	}
 	else if(contest && question && type){
 		single(contest,question,type);
@@ -32,13 +35,16 @@ function render() {
 		else
 			vartitle = vartitle+'Language';
 		vartitle = vartitle+' Based';
+		setUrl=contest+'/problems/'+question;
 	}
 	else if(contest && !question && type) {
 		oneType(contest,type);
+		setUrl=contest;
 	}
 	else {
-		alert("Please give feedback.");
+		//alert("Invalid Selection");
 	}
+	$('#url').html(function() {return '<a href="https://www.codechef.com/'+setUrl+'" target="_blank">Link to Codechef:<br> www.codechef.com/'+setUrl+'</a>';});
 	google.charts.load('current', {'packages':['corechart']});
 	google.charts.setOnLoadCallback(drawChart);
 }
@@ -54,7 +60,7 @@ function zeros(dimensions) {
 
 function getQuestions(contest) {
 	//alert("Getting Qns for - "+contest);
-	var ar=["PALINGAM","GCAC","CHEFMOVR","RAINBOWA","CHEFFA","STRINGRA","HILLJUMP","WALKBT","MATDW"];
+	var ar=<?php echo json_encode($contestQuestions); ?>;
 	return ar;
 }
 
