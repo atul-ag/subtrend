@@ -45,13 +45,13 @@
 	width: 174px;
 }
 
- header, main, footer {
+ header, main {
    padding-left: 174px;
  }
 
 
  @media only screen and (max-width : 992px) {
-   header, main, footer {
+   header, main {
      padding-left: 0;
    }
    .top_pad {
@@ -70,7 +70,10 @@
 
 
 footer {
+	background-color: #000000;
+	color: #ffffff;
 	z-index: 10000;
+	font-size: x-small;
 }
 
 

@@ -17,18 +17,20 @@ function render() {
 	['51',  0001,      0111]
 	]
 	if(contest && !question && !type) {
-		all(contest);
+
 		$('#question').show();
 		$('#type').show();
 		vartitle=contest;
 		setUrl=contest;
+		all(contest);
 	}
 	else if(contest && question && !type) {
-		oneQuestion(contest,question);
+
 		setUrl=contest+'/problems/'+question;
+		oneQuestion(contest,question);
 	}
 	else if(contest && question && type){
-		single(contest,question,type);
+
 		vartitle=contest+' > '+question+' > ';
 		if(type=='star')
 			vartitle = vartitle+'Star';
@@ -36,16 +38,18 @@ function render() {
 			vartitle = vartitle+'Language';
 		vartitle = vartitle+' Based';
 		setUrl=contest+'/problems/'+question;
+		single(contest,question,type);
 	}
 	else if(contest && !question && type) {
-		oneType(contest,type);
+
 		setUrl=contest;
+		oneType(contest,type);
 	}
 	else {
 		//alert("Invalid Selection");
 	}
 	$('#url').html(function() {return '<a href="https://www.codechef.com/'+setUrl+'" target="_blank">Link to Codechef:<br> www.codechef.com/'+setUrl+'</a>';});
-	google.charts.load('current', {'packages':['corechart']});
+	google.charts.load('current', {'packages':['corechart','line']});
 	google.charts.setOnLoadCallback(drawChart);
 }
 
@@ -56,15 +60,12 @@ function zeros(dimensions) {
 	}
 	return array;
 }
-
-
+	
 function getQuestions(contest) {
 	//alert("Getting Qns for - "+contest);
-	var ar=<?php echo json_encode($contestQuestions); ?>;
+	var ar=["ALATE","ALTSUB","GTREE","KMAX","PRINCESS"];
 	return ar;
 }
-
-
 function all(contest) {
 	//alert(contest + " all contest Data");
 	var ar=getQuestions(contest);
@@ -310,7 +311,7 @@ function drawChart() {
 		//width: wd
 	};
 
-	var chart = new google.visualization.LineChart(document.getElementById('content'));
+	var chart = new google.charts.Line(document.getElementById('content'));
 
 	chart.draw(data, options);
 }
