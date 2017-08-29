@@ -80,7 +80,7 @@ function all(contest) {
 		$.ajax({
 			url: path,
 			dataType: 'json',
-			async: true,
+			async: false,
 			success: function(json) {
 				for (stamps in json["time"]) {
 					var len=json["time"][stamps].length;
@@ -126,7 +126,7 @@ function oneQuestion(contest,question) {
 	$.ajax({
 		url: path,
 		dataType: 'json',
-		async: true,
+		async: false,
 		success: function(json) {
 			for (stamps in json["time"]) {
 				var len=json["time"][stamps].length;
@@ -168,7 +168,7 @@ function single(contest,question,type) {
 	$.ajax({
 		url: path,
 		dataType: 'json',
-		async: true,
+		async: false,
 		success: function(json) {
 			for (stamps in json["time"]) {
 				var len=json["time"][stamps].length;
@@ -237,7 +237,7 @@ function oneType(contest,type) {
 		$.ajax({
 			url: path,
 			dataType: 'json',
-			async: true,
+			async: false,
 			success: function(json) {
 				for (stamps in json["time"]) {
 					var len=json["time"][stamps].length;
