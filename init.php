@@ -1,7 +1,11 @@
  <?php
+$contestName = "SEPT17";
+$contestQuestions = array("SUMCUBE","CHEFSUM","CHEFPDIG","MINPERM","WEASELTX","FILLMTR","QGRID","WEASELSC");
+
+/*
 $contestName = "LOCAUG17";
 $contestQuestions = array("ALATE","ALTSUB","GTREE","KMAX","PRINCESS");
-/*
+
 $contestName = "AUG17";
 $contestQuestions = array("PALINGAM","GCAC","CHEFMOVR","RAINBOWA","CHEFFA","    STRINGRA","HILLJUMP","WALKBT","MATDW");
 //$contestQuestions = array("CHEFFA","STRINGRA","HILLJUMP","WALKBT","MATDW")    ;

@@ -31,7 +31,7 @@ include 'init.php';
 		</nav>
 		<div id="slide-out" class="side-nav fixed z-depth-4">
 			<img src="fonts/svg/bar.svg" />
-			<a href="../">BACK</a>
+			<a href="index.php">BACK</a>
 	</header>
 	<main>
 		<div class="container">
