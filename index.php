@@ -23,7 +23,7 @@ include 'init.php';
 		<nav class="dbg">
 			<div class="nav-wrapper">
 				<a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons">menu</i></a>
-				<a href="#" class="brand-logo center">CodeChef</a>
+				<a href="#" class="brand-logo center">Codigo 2017</a>
 				<ul id="nav-mobile" class="left hide-on-med-and-down">
 					<li><a href=""></a></li>
 				</ul>
@@ -59,7 +59,7 @@ include 'init.php';
 	<main>
 		<div class="container">
 			<div class="row">
-				<h3 class="center-align">Submission Trends</h3>
+				<h3 class="center-align">Submission Trends<sup style="color: red; font-size: 10px;">Beta (error of +-5% to +-10%)</sup></div></h3>
 
 				<div id="content">
 					This is the display for number of submissions made during the contest of Codechef in a graphical way.<br><br>
