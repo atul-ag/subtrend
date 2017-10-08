@@ -63,7 +63,7 @@ function zeros(dimensions) {
 	
 function getQuestions(contest) {
 	//alert("Getting Qns for - "+contest);
-	var ar=["CHEFSUM","MINPERM","CHEFPDIG","SUMCUBE","WEASELTX","FILLMTR","QGRID","WEASELSC"];
+	var ar=["CODG1701","CODG1702","CODG1703","CODG1704","CODG1705"];
 	return ar;
 }
 function all(contest) {

@@ -1,6 +1,6 @@
  <?php
-$contestName = "SEPT17";
-$contestQuestions = array("SUMCUBE","CHEFSUM","CHEFPDIG","MINPERM","WEASELTX","FILLMTR","QGRID","WEASELSC");
+$contestName = "CODG2017";
+$contestQuestions = array("CODG1701","CODG1702","CODG1703","CODG1704","CODG1705");
 
 /*
 $contestName = "LOCAUG17";
